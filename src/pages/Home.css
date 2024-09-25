@@ -1,0 +1,51 @@
+.home-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../assets/MoviePoster/HomeBackground.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: adds a dark overlay for text readability */
+    padding: 50px;
+    text-align: center;
+    border-radius: 15px;
+  }
+  
+  .title {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 20px;
+    font-family: 'SnowFont', sans-serif; /* Optional: Use a custom font */
+  }
+  
+  .tagline {
+    font-size: 1.5rem;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .btn {
+    background-color: white;
+    color: #000;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #ddd;
+  }
+  
