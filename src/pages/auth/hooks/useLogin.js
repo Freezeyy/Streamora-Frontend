@@ -26,9 +26,13 @@ const useLogin = () => {
     const data = await response.json();
     
     if (response.ok) {
+      // console.log("HAHA", data);
+
       // Assuming you handle tokens in local storage or state management
       localStorage.setItem('token', data.token);
       localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user`s Id', data.userId);
+      
       return { success: true };
     } else {
       setErrorMessage(data.message || 'Login failed.'); // Display error message if any

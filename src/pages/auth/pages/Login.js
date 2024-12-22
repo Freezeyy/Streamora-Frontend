@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLogin from '../hooks/useLogin';
-import '../css/Signup.css'; // Reuse the Signup CSS for snowflakes
+import '../css/Signup.css';
 
 const Login = () => {
   const {
@@ -73,14 +73,35 @@ const Login = () => {
         {errorMessage && <div className="mt-4 text-red-600 text-center">{errorMessage}</div>}
         {successMessage && <div className="mt-4 text-green-600 text-center">{successMessage}</div>}
 
-        <div className="mt-4 text-center">
+        {/* <div className="mt-4 text-center">
           <button
             onClick={() => navigate('/forgot-password')}
             className="text-blue-500 hover:underline"
           >
             Forgot Password?
           </button>
-        </div>
+        </div> */}
+
+        {/* <div className="mt-4 text-center">
+          <span>
+            Don't have an account?{' '}
+            <span
+              onClick={() => navigate('/signup')}
+              className="text-blue-500 hover:underline cursor-pointer"
+            >
+              Sign up
+            </span>
+          </span>
+        </div> */}
+
+        <p className="mt-4 text-center text-gray-600">
+          <a href="/forgot-password" className="text-blue-500">Forgot Password?</a>
+        </p>
+
+        <p className="mt-4 text-center text-gray-600">
+          Don't have an account? <a href="/signup" className="text-blue-500">Sign up</a>
+        </p>
+
       </div>
     </div>
   );
