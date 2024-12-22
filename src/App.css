@@ -13,7 +13,6 @@
   z-index: 1000; /* Make sure it's above other elements */
 }
 
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -33,6 +32,19 @@
 
 .App-link {
   color: #61dafb;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/font.ttf") format("truetype");
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set global font */
+body {
+  @apply font-poppins;
 }
 
 @keyframes App-logo-spin {

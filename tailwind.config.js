@@ -4,6 +4,11 @@ export const content = [
   "./src/**/*.{js,jsx,ts,tsx}", // Adjust paths if necessary
 ];
 export const theme = {
-  extend: {},
+  extend: {
+    fontFamily: {
+      pacifico: ["Pacifico", "cursive"],
+      poppins: ["Poppins", "sans-serif"],
+    },
+  },
 };
 export const plugins = [];

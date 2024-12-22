@@ -1,0 +1,17 @@
+/* Keyframes for typing effect */
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Apply typing effect to placeholder */
+input::placeholder {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 4s steps(25) 1;
+  /* Adjust the animation duration (3s) and steps (20) for the speed and smoothness */
+}
