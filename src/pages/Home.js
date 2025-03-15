@@ -7,7 +7,7 @@ const Home = () => {
     <div className="home-container">
       <div className="overlay">
         <h1 className="title">Snow</h1>
-        <p className="tagline">Join Snow, where developers connect</p>
+        <p className="tagline">Join Snow, the next gen Social Media</p>
         <div className="buttons">
           <Link to="/login" className="btn">Log In</Link>
           <Link to="/signup" className="btn">Sign Up</Link>

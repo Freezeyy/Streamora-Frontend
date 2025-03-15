@@ -1,13 +1,15 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
 
 const usePost = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
+  const didFetch = useRef(false);
 
   // Create a new post
   const createPost = async (text, files) => {
+    console.log("Text content before sending:", text); 
     const formData = new FormData();
     formData.append('content', text);
 
@@ -32,6 +34,9 @@ const usePost = () => {
 
   // Fetch all posts, memoized with useCallback to prevent infinite re-renders
   const fetchPosts = useCallback(async () => {
+    if (didFetch.current) return; // Prevent duplicate calls
+    didFetch.current = true; // Mark fetch as completed
+
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:3000/posts?with[]=likes&with[]=comments', {
@@ -45,7 +50,7 @@ const usePost = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // No dependencies, so this won't change on every render
+  }, []);
 
   return { createPost, fetchPosts, loading, error, posts };
 };

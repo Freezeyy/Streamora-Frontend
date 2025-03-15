@@ -1,6 +1,6 @@
 .post {
     width: 100%;
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
     margin-bottom: 20px;
     padding: 20px;
@@ -8,12 +8,27 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.media-container {
-    margin: 10px 0;
+/* Image Row */
+.post-image {
     display: flex;
-    justify-content: center;
+    align-items: center;
+}
+
+/* Content Row */
+.post-content {
+    margin-top: 10px;
+}
+
+/* Media Container */
+.media-container {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .media-image, .media-video {
@@ -21,10 +36,12 @@
     border-radius: 8px;
 }
 
+/* Action Buttons Row */
 .post-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-top: 10px;
+    gap: 15px;
 }
 
 .action-button {

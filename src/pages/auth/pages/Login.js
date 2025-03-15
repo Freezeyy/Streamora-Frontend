@@ -48,18 +48,22 @@ const Login = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <input
             type="email"
+            name="email"
             placeholder="Email"
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             value={email}
             onChange={handleEmailChange}
+            autoComplete="username"
             required
           />
           <input
             type="password"
+            name="password"
             placeholder="Password"
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             value={password}
             onChange={handlePasswordChange}
+            autoComplete="current-password"
             required
           />
           <button
@@ -72,27 +76,6 @@ const Login = () => {
 
         {errorMessage && <div className="mt-4 text-red-600 text-center">{errorMessage}</div>}
         {successMessage && <div className="mt-4 text-green-600 text-center">{successMessage}</div>}
-
-        {/* <div className="mt-4 text-center">
-          <button
-            onClick={() => navigate('/forgot-password')}
-            className="text-blue-500 hover:underline"
-          >
-            Forgot Password?
-          </button>
-        </div> */}
-
-        {/* <div className="mt-4 text-center">
-          <span>
-            Don't have an account?{' '}
-            <span
-              onClick={() => navigate('/signup')}
-              className="text-blue-500 hover:underline cursor-pointer"
-            >
-              Sign up
-            </span>
-          </span>
-        </div> */}
 
         <p className="mt-4 text-center text-gray-600">
           <a href="/forgot-password" className="text-blue-500">Forgot Password?</a>

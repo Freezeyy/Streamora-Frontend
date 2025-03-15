@@ -23,37 +23,25 @@ const InputPost = () => {
     setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
   };
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     const result = await createPost(text, selectedFiles);
-//     if (result) {
-//       console.log('Post created successfully', result);
-//       // Clear form after success
-//       setText('');
-//       setSelectedFiles([]);
-//     }
-//   };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        // Prevent posting if there is no text or files
-        if (!text.trim() && selectedFiles.length === 0) {
-        alert("Please enter some text or upload at least one file to post.");
-        return;
-        }
-    
-        const result = await createPost(text, selectedFiles);
-        
-        if (result) {
-        console.log('Post created successfully', result);
-        // Clear form after success
-        setText('');
-        setSelectedFiles([]);
-        }
-    };
+  const handleSubmit = async (e) => {
+      e.preventDefault();
   
-
+      // Prevent posting if there is no text or files
+      if (!text.trim() && selectedFiles.length === 0) {
+      alert("Please enter some text or upload at least one file to post.");
+      return;
+      }
+  
+      const result = await createPost(text, selectedFiles);
+      
+      if (result) {
+      console.log('Post created successfully', result);
+      // Clear form after success
+      setText('');
+      setSelectedFiles([]);
+      }
+  };
+  
   // Helper function to display error message
   const renderErrorMessage = (error) => {
     if (!error) return null;

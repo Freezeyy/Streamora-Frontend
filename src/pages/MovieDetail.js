@@ -1,7 +1,7 @@
 // src/pages/MovieDetail.js
 import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/Topbar';
 
 function MovieDetail() {
   const location = useLocation();

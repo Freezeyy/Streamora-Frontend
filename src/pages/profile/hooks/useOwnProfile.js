@@ -1,7 +1,7 @@
 // src/hooks/useUserProfile.js
 import { useState, useEffect, useRef } from "react";
 
-const useUserProfile = (userId) => {
+const useOwnProfile = (userId) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ const useUserProfile = (userId) => {
     const fetchProfile = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/user/${userId}?with[]=followers&with[]=followings`,
+          `http://localhost:3000/api/user/${userId}?with[]=followers&with[]=followings&with[]=posts`,
           {
             method: "GET",
             headers: {
@@ -43,4 +43,4 @@ const useUserProfile = (userId) => {
   return { profile, loading, error };
 };
 
-export default useUserProfile;
+export default useOwnProfile;
