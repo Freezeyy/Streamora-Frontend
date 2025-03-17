@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import useLogout from "../pages/hooks/useLogout";
-import useUserProfile from "../pages/hooks/useUserProfile";
+import useLogout from "./hooks/useLogout";
+import useUserProfile from "./hooks/useUserProfile";
 import logo from "../assets/logo.png"; // Path relative to Sidebar.js
 import { FaSearch } from "react-icons/fa"; // Importing search icon
 
