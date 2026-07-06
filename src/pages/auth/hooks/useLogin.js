@@ -1,42 +1,50 @@
-// src/hooks/useLogin.js
 import { useState } from 'react';
+
+const API_BASE = 'http://localhost:3000';
 
 const useLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
+    if (errorMessage) setErrorMessage('');
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+    if (errorMessage) setErrorMessage('');
   };
 
   const login = async () => {
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    setIsLoading(true);
+    setErrorMessage('');
 
-    const data = await response.json();
-    
-    if (response.ok) {
-      // console.log("HAHA", data);
+    try {
+      const response = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // Assuming you handle tokens in local storage or state management
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user`s Id', data.userId);
-      
-      return { success: true };
-    } else {
-      setErrorMessage(data.message || 'Login failed.'); // Display error message if any
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('user`s Id', data.userId);
+        return { success: true };
+      }
+
+      setErrorMessage(data.details || data.message || data.error || 'Login failed.');
       return { success: false };
+    } catch {
+      setErrorMessage('Failed to connect to the server.');
+      return { success: false };
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,6 +52,7 @@ const useLogin = () => {
     email,
     password,
     errorMessage,
+    isLoading,
     handleEmailChange,
     handlePasswordChange,
     login,

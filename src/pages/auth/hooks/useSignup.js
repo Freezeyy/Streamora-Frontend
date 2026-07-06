@@ -1,59 +1,81 @@
 import { useState } from 'react';
 
+const API_BASE = 'http://localhost:3000';
+const USERNAME_PATTERN = /^[a-z0-9_]{3,30}$/;
+
 const useSignup = () => {
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const clearError = () => {
+    if (error) setError(null);
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error before submission
+    setError(null);
 
-    // Check if password and confirm password match
+    const normalizedUsername = username.trim().toLowerCase();
+
+    if (!USERNAME_PATTERN.test(normalizedUsername)) {
+      setError('Username must be 3–30 characters: lowercase letters, numbers, underscore');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      const response = await fetch('http://localhost:3000/signup', {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: fullName,
+          username: normalizedUsername,
           email,
           password,
+          redirect_url: window.location.origin,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess(true); // Show success message
+        setSuccess(true);
       } else {
-        setError(data.error || 'Something went wrong, please try again.');
+        setError(data.message || data.error || 'Something went wrong, please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to connect to the server.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
     fullName,
-    setFullName,
+    setFullName: (value) => { clearError(); setFullName(value); },
+    username,
+    setUsername: (value) => { clearError(); setUsername(value); },
     email,
-    setEmail,
+    setEmail: (value) => { clearError(); setEmail(value); },
     password,
-    setPassword,
+    setPassword: (value) => { clearError(); setPassword(value); },
     confirmPassword,
-    setConfirmPassword,
+    setConfirmPassword: (value) => { clearError(); setConfirmPassword(value); },
     error,
     success,
+    isLoading,
     handleSignup,
   };
 };

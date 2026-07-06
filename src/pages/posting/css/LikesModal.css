@@ -1,0 +1,107 @@
+.likes-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.likes-modal {
+  width: 100%;
+  max-width: 400px;
+  max-height: min(70vh, 520px);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.likes-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.likes-modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.likes-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.likes-modal-close:hover {
+  background: #e5e7eb;
+}
+
+.likes-modal-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.likes-modal-status {
+  margin: 0;
+  padding: 24px 18px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.likes-modal-error {
+  color: #dc2626;
+}
+
+.likes-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.likes-modal-user {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.likes-modal-user:hover {
+  background: #f9fafb;
+}
+
+.likes-modal-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.likes-modal-name {
+  font-weight: 600;
+  color: #111827;
+  font-size: 15px;
+}

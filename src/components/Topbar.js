@@ -1,118 +1,193 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FaSearch, FaBars, FaChevronLeft, FaChevronRight, FaUser } from "react-icons/fa";
 import useLogout from "./hooks/useLogout";
 import useUserProfile from "./hooks/useUserProfile";
-import logo from "../assets/logo.png"; // Path relative to Sidebar.js
-import { FaSearch } from "react-icons/fa"; // Importing search icon
+import useUserSearch from "./hooks/useUserSearch";
+import { isAuthenticated } from "../utils/auth";
+import "./css/Topbar.css";
 
-function Topbar({ sidebarToggle }) {
+const getInitials = (name) => {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+};
+
+const getAvatarSrc = (user) => {
+  if (user?.image || user?.imageUrl) return user.image || user.imageUrl;
+  if (user?.name) {
+    return `https://ui-avatars.com/api/?name=${getInitials(user.name)}&background=random&color=random&size=128`;
+  }
+  return null;
+};
+
+function Topbar({ sidebarToggle, onToggleCollapse, isCollapsed }) {
+  const navigate = useNavigate();
   const { logout } = useLogout();
-  const userId = localStorage.getItem("user`s Id"); // Assuming userId is stored in localStorage after login
+  const userId = localStorage.getItem("user`s Id");
   const { profile, loading, error } = useUserProfile(userId);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { results, loading: searchLoading, clearResults } = useUserSearch(searchTerm);
   const dropdownRef = useRef(null);
+  const searchRef = useRef(null);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const getInitials = (name) => {
-    const initials = name
-      .split(" ")
-      .map((n) => n[0])
-      .join("");
-    return initials.toUpperCase();
+    setIsDropdownOpen((prev) => !prev);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
-        console.log("Outside click detected, closing dropdown");
-        setTimeout(() => setIsDropdownOpen(false), 100); // Delay closing
-      } else {
-        console.log("Click inside dropdown detected");
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
       }
     };
-  
-    if (isDropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-  
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-  
-  
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    setIsSearchOpen(searchTerm.trim().length >= 2);
+  }, [searchTerm]);
+
+  const handleSelectUser = (id) => {
+    setSearchTerm("");
+    clearResults();
+    setIsSearchOpen(false);
+    navigate(`/profile/${id}`);
+  };
 
   return (
-    <nav className="h-16 flex items-center px-4 sm:px-6 lg:px-8 justify-between bg-teal-400">
+    <header className="app-topbar">
+      {sidebarToggle && (
+        <button
+          type="button"
+          className="topbar-icon-btn topbar-mobile-toggle"
+          onClick={sidebarToggle}
+          aria-label="Open menu"
+        >
+          <FaBars />
+        </button>
+      )}
 
-      {/* Logo Section */}
-      <div className="h-full flex items-center flex-shrink-0 cursor-pointer" onClick={sidebarToggle}>
-        <img src={logo} alt="Logo" className="h-32 w-auto -ml-[19px]" />
-      </div>
+      {/* {onToggleCollapse && (
+        <button
+          type="button"
+          className="topbar-icon-btn topbar-desktop-toggle"
+          onClick={onToggleCollapse}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+        </button>
+      )} */}
 
-
-      {/* Search Bar Section */}
-      <div className="flex items-center justify-center -ml-4 flex-1 mx-4 h-full">
-        <div className="w-full max-w-md relative">
+      <div className="flex items-center justify-center flex-1 mx-4" ref={searchRef}>
+        <div className="w-full max-w-md relative search-wrapper">
           <input
             type="text"
             placeholder="Search people..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-1 pl-10 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-gray-500"
+            onFocus={() => {
+              if (searchTerm.trim().length >= 2) setIsSearchOpen(true);
+            }}
+            className="topbar-search-input"
           />
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        </div>
-      </div>
 
-      {/* Profile Section */}
-      <div className="h-full flex items-center">
-        <div className="relative flex-shrink-0" onClick={toggleDropdown} ref={dropdownRef}>
-          {!loading && profile && (
-            <div className="flex items-center space-x-4 cursor-pointer">
-              <img
-                src={
-                  profile.imageUrl
-                    ? profile.imageUrl
-                    : `https://ui-avatars.com/api/?name=${getInitials(profile.name)}&background=random&color=random&size=128`
-                }
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-              <span className="text-black-500">{profile.name}</span>
+          {isSearchOpen && (
+            <div className="search-results">
+              {searchLoading && (
+                <p className="search-results-status">Searching...</p>
+              )}
+
+              {!searchLoading && results.length === 0 && (
+                <p className="search-results-status">No users found</p>
+              )}
+
+              {!searchLoading && results.length > 0 && (
+                <ul className="search-results-list">
+                  {results.map((user) => (
+                    <li key={user.id}>
+                      <button
+                        type="button"
+                        className="search-result-item"
+                        onClick={() => handleSelectUser(user.id)}
+                      >
+                        <img
+                          src={getAvatarSrc(user)}
+                          alt={user.name}
+                          className="search-result-avatar"
+                        />
+                        <div className="search-result-info">
+                          <span className="search-result-name">{user.name}</span>
+                          <span className="search-result-email">{user.email}</span>
+                        </div>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </div>
+      </div>
 
-        {/* Dropdown Menu */}
+      <div className="relative flex-shrink-0" ref={dropdownRef}>
+        {isAuthenticated() && (
+          <button
+            type="button"
+            className="flex items-center space-x-3 cursor-pointer"
+            onClick={toggleDropdown}
+          >
+            {profile ? (
+              <img
+                src={getAvatarSrc(profile)}
+                alt="Profile"
+                className="w-10 h-10 rounded-full"
+              />
+            ) : (
+              <span className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <FaUser className="text-gray-600" />
+              </span>
+            )}
+            <span className="topbar-username">
+              {profile?.name || (loading ? 'Loading…' : 'Account')}
+            </span>
+          </button>
+        )}
+
         {isDropdownOpen && (
-          <div className="absolute right-4 mt-[140px] w-48 bg-sky-200 rounded-lg shadow-lg">
+          <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
             <ul className="py-1">
-              <li>
-                <Link
-                  to="../profile"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
-                  onClick={() => setIsDropdownOpen(false)}
-                >
-                  Profile
-                </Link>
-              </li>
-              <hr className="border-t border-gray-400 w-5/6 mx-auto my-1" />
+              {profile && (
+                <li>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                </li>
+              )}
               <li>
                 <button
-                  onClick={(e) => {
-                    console.log("Logout button clicked");
-                    e.stopPropagation(); // Ensure the button click isn't blocked
+                  type="button"
+                  onClick={() => {
+                    setIsDropdownOpen(false);
                     logout();
                   }}
-                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
                 >
                   Logout
                 </button>
@@ -121,13 +196,11 @@ function Topbar({ sidebarToggle }) {
           </div>
         )}
 
-        {loading && <div className="text-white">Loading...</div>}
-        {error && <div className="text-red-500">{error}</div>}
-        {!profile && !loading && !error && (
-          <div>No profile data available</div>
+        {error && !isDropdownOpen && (
+          <div className="text-red-600 text-sm">Session expired</div>
         )}
       </div>
-    </nav>
+    </header>
   );
 }
 

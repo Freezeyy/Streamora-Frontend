@@ -1,0 +1,61 @@
+.mention-textarea-root {
+  position: relative;
+}
+
+.mention-textarea-root.mention-ui-open {
+  z-index: 200;
+}
+
+.mention-textarea-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mention-textarea-anchor {
+  flex: 1;
+  min-width: 0;
+}
+
+.mention-textarea-icon {
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+
+.mention-textarea-at {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--snow-text-muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.mention-textarea-at:hover:not(:disabled),
+.mention-textarea-at--active {
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--snow-primary);
+}
+
+.mention-textarea-at:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mention-textarea-panel {
+  right: 0;
+  left: auto;
+}
+
+.comments-modal-compose .mention-textarea-root.mention-panel-open .mention-textarea-icon {
+  z-index: 211;
+}
+
+.comments-modal-compose .mention-textarea-root.mention-ui-open {
+  z-index: 200;
+}

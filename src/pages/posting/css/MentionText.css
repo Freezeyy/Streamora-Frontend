@@ -1,0 +1,94 @@
+.mention-link {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--snow-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.mention-link:hover,
+.mention-link:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+.mention-hover-card {
+  position: fixed;
+  z-index: 10001;
+  width: min(280px, calc(100vw - 24px));
+  padding: 12px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 32px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.mention-hover-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mention-hover-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.mention-hover-card__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mention-hover-card__name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--snow-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mention-hover-card__username {
+  font-size: 12px;
+  color: var(--snow-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mention-hover-card__bio {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--snow-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mention-hover-card__status {
+  margin: 0;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--snow-text-muted);
+  text-align: center;
+}
+
+.mention-hover-card--static {
+  cursor: default;
+}

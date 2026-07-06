@@ -4,14 +4,11 @@
   margin: 0 auto;
   margin-bottom: 20px;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+  font-family: inherit;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  }
+}
   
   .profile-header {
     margin-bottom: 20px;
@@ -40,6 +37,12 @@
   .profile-bio {
     margin-top: 20px;
   }
+
+  .profile-bio-error {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #dc2626;
+  }
   
   .bio-editor {
     width: 100%;
@@ -62,12 +65,12 @@
   }
   
   .edit-button {
-    background-color: #007bff;
+    background-color: var(--snow-primary);
     color: white;
   }
   
   .save-button {
-    background-color: #28a745;
+    background-color: var(--snow-primary);
     color: white;
   }
   
@@ -75,4 +78,85 @@
     background-color: #dc3545;
     color: white;
   }
+
+.profile-back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--snow-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.profile-back-link:hover {
+  text-decoration: underline;
+}
+
+.profile-actions {
+  margin: 12px 0;
+}
+
+.follow-button {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--snow-primary);
+  color: #fff;
+  transition: background-color 0.2s;
+}
+
+.follow-button:hover:not(:disabled) {
+  background-color: var(--snow-primary-hover);
+}
+
+.follow-button.following {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.follow-button.following:hover:not(:disabled) {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.follow-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.follow-button.requested {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.profile-private-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--snow-text-muted);
+  margin-bottom: 8px;
+}
+
+.profile-private-notice {
+  margin-top: 16px;
+  padding: 20px;
+  text-align: center;
+  color: var(--snow-text-muted);
+  line-height: 1.5;
+}
+
+.profile-private-notice-icon {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: var(--snow-navy);
+}
+
+.profile-private-notice p {
+  margin: 0;
+}
   

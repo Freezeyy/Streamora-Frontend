@@ -1,105 +1,270 @@
-import React, { useEffect } from 'react';
-import usePost from './hooks/usePost';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './css/OutputPost.css';
-import { FaRegThumbsUp, FaComment } from 'react-icons/fa'; // Importing icons
+import { FaRegThumbsUp, FaThumbsUp, FaComment } from 'react-icons/fa';
+import LikesModal from './LikesModal';
+import CommentsModal from './CommentsModal';
+import MentionText from './MentionText';
+import PostMenu from './PostMenu';
+import EditPostModal from './EditPostModal';
+import GroupPostMeta from './GroupPostMeta';
+import FileAttachmentCard from './FileAttachmentCard';
+import { API_BASE, getMediaCategory } from './postUtils';
 
-const OutputPost = ({ loggedInUserId }) => {
-  const { fetchPosts, posts, loading, error } = usePost();
+const CURRENT_USER_ID = () => Number(localStorage.getItem("user`s Id"));
 
+const getInitials = (name) => {
+  if (!name) return '?';
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase();
+};
 
-  const getInitials = (name) => {
-    const initials = name
-      .split(" ")
-      .map((n) => n[0])
-      .join("");
-    return initials.toUpperCase();
-  };
+const OutputPost = ({
+  loggedInUserId,
+  posts,
+  loading,
+  error,
+  fetchPosts,
+  toggleLike,
+  addComment,
+  updatePost,
+  deletePost,
+  name,
+  canModerateGroup = false,
+}) => {
+  const navigate = useNavigate();
+  const [likesModalPostId, setLikesModalPostId] = useState(null);
+  const [commentsModalPost, setCommentsModalPost] = useState(null);
+  const [editingPost, setEditingPost] = useState(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState(null);
 
-  // Function to determine the media type based on the file extension
-  const getMediaType = (mediaPath) => {
-    const extension = mediaPath.split('.').pop().toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
-      return 'image';
-    } else if (['mp4', 'mov', 'avi'].includes(extension)) {
-      return 'video';
-    } else if (extension === 'pdf') {
-      return 'pdf';
-    }
-    return null;
-  };
-
-  // Fetch posts on component mount
   useEffect(() => {
-    fetchPosts(); // Fetch posts when the component mounts
+    if (fetchPosts) fetchPosts();
   }, [fetchPosts]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (loading && posts.length === 0) {
+    return <div className="posts-status ice-card">Loading posts...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (error && posts.length === 0) {
+    return <div className="posts-status posts-error ice-card">Error: {typeof error === 'string' ? error : 'Failed to load posts'}</div>;
   }
 
-  // Filter posts by logged-in user ID if userId is provided
   const filteredPosts = loggedInUserId
-  ? posts.filter(post => Number(post.user_id) === Number(loggedInUserId))
-  : posts;
+    ? posts.filter((post) => Number(post.user_id) === Number(loggedInUserId))
+    : posts;
+
+  const currentUserId = CURRENT_USER_ID();
+
+  const goToProfile = (userId) => {
+    if (!userId) return;
+    navigate(`/profile/${userId}`);
+  };
+
+  const handleEditSave = async (postId, payload) => {
+    setEditSaving(true);
+    setEditError(null);
+    const result = await updatePost(postId, payload);
+    setEditSaving(false);
+    if (!result) {
+      setEditError('Failed to update post');
+      return false;
+    }
+    return true;
+  };
+
+  const handleDeletePost = async (post) => {
+    const isModeratorDelete = post.viewer_can_moderate
+      && Number(post.user_id) !== Number(currentUserId);
+    const confirmed = window.confirm(
+      isModeratorDelete
+        ? 'Remove this post from the group? This cannot be undone.'
+        : 'Delete this post? This cannot be undone.',
+    );
+    if (!confirmed) return;
+
+    const success = await deletePost(post.id);
+    if (!success) {
+      window.alert('Failed to delete post. Please try again.');
+    }
+  };
+
+  const closeEditModal = () => {
+    setEditingPost(null);
+    setEditError(null);
+  };
 
   return (
-    <div>
-      {filteredPosts.length > 0 ? (
-        filteredPosts.map((post) => (
-          <div key={post.id} className="post">
-            {/* Row 1: User Image */}
-            <div className="post-image">
-              <img
-                src={post.user.image ? 
-                      post.user.image : 
-                      `https://ui-avatars.com/api/?name=${getInitials(post.user.name)}&background=random&color=random&size=128`
-                }
-                className="w-12 h-12 -mt-1 rounded-full"
-              />
-              <div className='ml-3'>
-                {post.user.name}
-              </div>
-            </div>
+    <>
+      <div className="posts-list">
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => {
+            const hasText = Boolean(post.content?.trim());
+            const mediaItems = Array.isArray(post.media) ? post.media : [];
+            const visualItems = mediaItems.filter((file) => getMediaCategory(file.media_path) !== 'file');
+            const fileItems = mediaItems.filter((file) => getMediaCategory(file.media_path) === 'file');
+            const userName = name || post.user?.name || 'Unknown user';
+            const authorId = post.user?.id || post.user_id;
+            const avatarSrc = post.user?.image
+              ? post.user.image
+              : `https://ui-avatars.com/api/?name=${getInitials(userName)}&background=random&color=random&size=128`;
+            const likes = Array.isArray(post.likes) ? post.likes : [];
+            const likeCount = likes.length;
+            const comments = Array.isArray(post.comments) ? post.comments : [];
+            const commentCount = comments.length;
+            const isLiked = currentUserId
+              ? likes.some((like) => Number(like.user_id) === currentUserId)
+              : false;
 
-            {/* Row 2: Post Content & Media */}
-            <div className="post-content">
-              <p>{post.content}</p>
-              {post.media && post.media.length > 0 && post.media.map((file, index) => {
-                const mediaType = getMediaType(file.media_path);
-                const mediaUrl = `http://localhost:3000${file.media_path}`;
+            const isOwnPost = currentUserId
+              && Number(authorId) === currentUserId;
+            const canModeratePost = Boolean(
+              post.viewer_can_moderate || (canModerateGroup && post.group_id),
+            );
+            const showPostMenu = (isOwnPost || canModeratePost) && deletePost;
+            const canEditPost = isOwnPost && updatePost;
 
-                return (
-                  <div key={index} className="media-container">
-                    {mediaType === 'image' && <img src={mediaUrl} alt="post-media" className="media-image" />}
-                    {mediaType === 'video' && <video src={mediaUrl} controls className="media-video" />}
-                    {mediaType === 'pdf' && <a href={mediaUrl} target="_blank" rel="noopener noreferrer">View PDF</a>}
+            return (
+              <article key={post.id} className="post ice-card">
+                <header className="post-header">
+                  <button
+                    type="button"
+                    className="post-header-link"
+                    onClick={() => goToProfile(authorId)}
+                    disabled={!authorId}
+                  >
+                    <img src={avatarSrc} alt={userName} className="post-avatar" />
+                    <span className="post-author">{userName}</span>
+                  </button>
+
+                  {showPostMenu && (
+                    <PostMenu
+                      onEdit={canEditPost ? () => setEditingPost(post) : undefined}
+                      onDelete={() => handleDeletePost(post)}
+                    />
+                  )}
+                </header>
+
+                {post.group && <GroupPostMeta post={post} />}
+
+                {hasText && (
+                  <MentionText
+                    text={post.content}
+                    className="post-text"
+                    onMentionClick={goToProfile}
+                  />
+                )}
+
+                {visualItems.length > 0 && (
+                  <div className={`post-media-grid glass-inset ${visualItems.length === 1 ? 'single' : 'multi'}`}>
+                    {visualItems.map((file, index) => {
+                      const mediaType = getMediaCategory(file.media_path);
+                      const mediaUrl = `${API_BASE}${file.media_path}`;
+
+                      return (
+                        <div key={file.id || index} className="media-item">
+                          {mediaType === 'image' && (
+                            <img src={mediaUrl} alt="Post attachment" className="media-image" loading="lazy" />
+                          )}
+                          {mediaType === 'video' && (
+                            <video src={mediaUrl} controls className="media-video" />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
+                )}
 
-            {/* Row 3: Like & Comment Buttons */}
-            <div className="post-actions">
-              <button className="action-button">
-                <FaRegThumbsUp className="action-icon" />
-                Like
-              </button>
-              <button className="action-button">
-                <FaComment className="action-icon" />
-                Comment
-              </button>
-            </div>
-          </div>
+                {fileItems.length > 0 && (
+                  <div className="post-file-list glass-inset">
+                    {fileItems.map((file, index) => (
+                      <FileAttachmentCard
+                        key={file.id || index}
+                        href={`${API_BASE}${file.media_path}`}
+                        mediaPath={file.media_path}
+                        fileName={file.file_name}
+                      />
+                    ))}
+                  </div>
+                )}
 
-        ))
-      ) : (
-        <div>No posts available.</div>
-      )}
-    </div>
+                {likeCount > 0 && (
+                  <button
+                    type="button"
+                    className="post-like-count"
+                    onClick={() => setLikesModalPostId(post.id)}
+                  >
+                    {likeCount} {likeCount === 1 ? 'like' : 'likes'}
+                  </button>
+                )}
+
+                {commentCount > 0 && (
+                  <button
+                    type="button"
+                    className="post-comment-count"
+                    onClick={() => setCommentsModalPost(post)}
+                  >
+                    {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+                  </button>
+                )}
+
+                <footer className="post-actions">
+                  <button
+                    type="button"
+                    className={`action-button${isLiked ? ' liked' : ''}`}
+                    onClick={() => toggleLike(post.id)}
+                  >
+                    {isLiked ? (
+                      <FaThumbsUp className="action-icon" />
+                    ) : (
+                      <FaRegThumbsUp className="action-icon" />
+                    )}
+                    {isLiked ? 'Liked' : 'Like'}
+                  </button>
+                  <button
+                    type="button"
+                    className="action-button"
+                    onClick={() => setCommentsModalPost(post)}
+                  >
+                    <FaComment className="action-icon" />
+                    Comment{commentCount > 0 ? ` (${commentCount})` : ''}
+                  </button>
+                </footer>
+              </article>
+            );
+          })
+        ) : (
+          <div className="posts-status ice-card">No posts yet. Be the first to share something!</div>
+        )}
+      </div>
+
+      <LikesModal
+        postId={likesModalPostId}
+        isOpen={Boolean(likesModalPostId)}
+        onClose={() => setLikesModalPostId(null)}
+      />
+
+      <CommentsModal
+        name={name}
+        post={commentsModalPost}
+        isOpen={Boolean(commentsModalPost)}
+        onClose={() => setCommentsModalPost(null)}
+        addComment={addComment}
+      />
+
+      <EditPostModal
+        post={editingPost}
+        isOpen={Boolean(editingPost)}
+        onClose={closeEditModal}
+        onSave={handleEditSave}
+        saving={editSaving}
+        error={editError}
+      />
+    </>
   );
 };
 

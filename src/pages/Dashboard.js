@@ -1,17 +1,6 @@
-// src/pages/Dashboard.js
 import React from "react";
-import Layout from "../components/Layout";
-import InputPost from "./posting/InputPost";
-import OutputPost from "./posting/OutputPost";
+import { Navigate } from "react-router-dom";
 
-const Dashboard = () => {
-
-  return (
-    <Layout showRightColumn={true}>
-      <InputPost />
-      <OutputPost />
-    </Layout>
-  );
-};
+const Dashboard = () => <Navigate to="/feed" replace />;
 
 export default Dashboard;

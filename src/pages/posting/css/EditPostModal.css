@@ -1,0 +1,186 @@
+.edit-post-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.edit-post-modal {
+  width: min(520px, 100%);
+  padding: 1.25rem;
+}
+
+.edit-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.edit-post-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--snow-navy);
+}
+
+.edit-post-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--snow-navy);
+  cursor: pointer;
+}
+
+.edit-post-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.edit-post-error {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+.edit-post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.edit-post-cancel,
+.edit-post-save {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-post-cancel {
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--snow-text);
+}
+
+.edit-post-save {
+  background: var(--snow-primary);
+  color: #fff;
+}
+
+.edit-post-save:disabled,
+.edit-post-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-post-save:hover:not(:disabled) {
+  background: var(--snow-primary-hover);
+}
+
+.edit-post-media {
+  margin-top: 1rem;
+  padding: 12px;
+}
+
+.edit-post-media-label {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--snow-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.edit-post-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.edit-post-media-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.edit-post-media-preview {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.edit-post-media-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-post-file-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  font-size: 11px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.edit-post-media-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-post-uploads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.edit-post-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--snow-navy);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.edit-post-upload-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--snow-primary);
+}

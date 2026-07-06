@@ -1,0 +1,282 @@
+.wa-guide {
+  --wa-green: #25d366;
+  --wa-green-dark: #128c7e;
+  --wa-green-soft: rgba(37, 211, 102, 0.12);
+  --wa-green-border: rgba(37, 211, 102, 0.35);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.wa-guide-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+/* ── Settings (collapsible) ── */
+
+.wa-guide--settings {
+  margin-top: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(37, 211, 102, 0.22);
+  background: rgba(37, 211, 102, 0.05);
+  overflow: hidden;
+}
+
+.wa-guide-settings-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--snow-navy);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.wa-guide-settings-summary::-webkit-details-marker {
+  display: none;
+}
+
+.wa-guide-settings-summary::after {
+  content: '▾';
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--snow-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.wa-guide--settings[open] .wa-guide-settings-summary::after {
+  transform: rotate(180deg);
+}
+
+.wa-guide-settings-summary .wa-guide-icon {
+  color: #128c7e;
+}
+
+.wa-guide-settings-body {
+  padding: 0 14px 14px;
+  border-top: 1px solid rgba(37, 211, 102, 0.15);
+}
+
+.wa-guide-settings-steps {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wa-guide-settings-steps li {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--snow-text-muted);
+}
+
+.wa-guide-settings-steps p {
+  margin: 2px 0 8px;
+}
+
+.wa-guide-settings-step-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #128c7e;
+  margin-bottom: 2px;
+}
+
+/* ── Banner (Calendar) ── */
+
+.wa-guide--banner {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: linear-gradient(
+    120deg,
+    rgba(37, 211, 102, 0.1) 0%,
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  border: 1px solid var(--wa-green-border);
+}
+
+.wa-guide-banner-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.wa-guide-banner-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--wa-green-soft);
+  color: var(--wa-green-dark);
+  flex-shrink: 0;
+}
+
+.wa-guide-banner-title {
+  margin: 0 0 2px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--snow-navy);
+}
+
+.wa-guide-banner-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--snow-text-muted);
+  line-height: 1.45;
+}
+
+.wa-guide-banner-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wa-guide-banner-steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  align-items: start;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--snow-text);
+}
+
+.wa-guide-banner-steps li > :not(.wa-guide-step-num):nth-child(2) {
+  grid-column: 2;
+}
+
+.wa-guide-banner-steps .wa-guide-bot-row,
+.wa-guide-banner-steps .wa-guide-bubble,
+.wa-guide-banner-steps .wa-guide-bot-pill {
+  grid-column: 2;
+  margin-top: 4px;
+}
+
+.wa-guide-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--wa-green);
+  margin-top: 1px;
+}
+
+/* ── Compact (removed — use WhatsAppSyncHint) ── */
+
+/* ── Shared pieces ── */
+
+.wa-guide-inline-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--wa-green-soft);
+  color: var(--wa-green-dark);
+}
+
+.wa-guide-link {
+  color: var(--snow-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.wa-guide-link:hover {
+  text-decoration: underline;
+}
+
+.wa-guide-bot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wa-guide-bot-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--wa-green-dark);
+  background: #fff;
+  border: 1px solid var(--wa-green-border);
+  text-decoration: none;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+a.wa-guide-bot-pill:hover {
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.25);
+  transform: translateY(-1px);
+}
+
+.wa-guide-bot-pill--muted {
+  font-weight: 500;
+  color: var(--snow-text-muted);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.wa-guide-copy-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--snow-navy);
+  background: rgba(255, 255, 255, 0.55);
+  transition: background 0.2s ease;
+}
+
+.wa-guide-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.wa-guide-bubble {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px 10px 10px 4px;
+  background: #dcf8c6;
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.wa-guide-bubble code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  color: #1a3d2e;
+  word-break: break-word;
+}
+
+.wa-guide-bubble-tail {
+  position: absolute;
+  left: -5px;
+  bottom: 6px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 6px solid #dcf8c6;
+}
