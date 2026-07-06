@@ -11,6 +11,13 @@
   color: var(--snow-text);
 }
 
+/* Cover full viewport while scrolling */
+.landing > .snowflakes.snowfall-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
 .landing-glow {
   position: absolute;
   width: 420px;

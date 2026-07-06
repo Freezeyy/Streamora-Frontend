@@ -43,7 +43,7 @@ const Home = () => {
 
   return (
     <div className="landing">
-      <Snowfall variant="default" />
+      <Snowfall variant="subtle" fixed />
 
       <div className="landing-glow landing-glow--left" aria-hidden="true" />
       <div className="landing-glow landing-glow--right" aria-hidden="true" />

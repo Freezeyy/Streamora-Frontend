@@ -21,6 +21,12 @@
   pointer-events: none;
 }
 
+.snowfall-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
 .snowflake {
   position: absolute;
   top: -12px;
@@ -63,7 +69,3 @@
 .snowflake:nth-child(16) { left: 62%; animation-duration: 12s; animation-delay: 3s; }
 .snowflake:nth-child(17) { left: 33%; animation-duration: 8s;  animation-delay: 6s; }
 .snowflake:nth-child(18) { left: 95%; animation-duration: 11s; animation-delay: 2s; }
-
-.snowflakes--default .snowflake:nth-child(n+10) {
-  display: none;
-}

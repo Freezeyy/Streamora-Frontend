@@ -36,7 +36,7 @@ const VerifyEmail = () => {
 
   return (
     <div className="auth-page">
-      <Snowfall variant="default" />
+      <Snowfall variant="subtle" fixed />
 
       <div className="auth-card ice-card">
         <h1 className="auth-title">Email verification</h1>

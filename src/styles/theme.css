@@ -100,8 +100,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(to bottom, var(--snow-bg-start), var(--snow-bg-end));
+  background: linear-gradient(160deg, var(--snow-bg-start) 0%, var(--snow-bg-mid) 45%, var(--snow-bg-end) 100%);
   position: relative;
+  overflow-x: hidden;
 }
 
 .auth-card {
