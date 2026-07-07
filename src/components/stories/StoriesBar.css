@@ -6,6 +6,36 @@
   overflow: visible;
 }
 
+@media (max-width: 640px) {
+  .stories-section {
+    padding: 12px 0 10px;
+    margin-bottom: 14px;
+  }
+
+  .stories-row {
+    gap: 12px;
+  }
+
+  .create-story-button,
+  .create-story-label {
+    width: 68px;
+    max-width: 68px;
+  }
+
+  .create-story-avatar-wrap,
+  .story-ring {
+    width: 64px;
+    height: 64px;
+  }
+
+  .create-story-avatar,
+  .create-story-avatar.placeholder,
+  .story-ring-inner {
+    width: 56px;
+    height: 56px;
+  }
+}
+
 .stories-section-title {
   margin: 0 0 14px;
   font-size: 0.8rem;

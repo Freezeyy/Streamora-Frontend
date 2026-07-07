@@ -310,3 +310,28 @@
 .action-icon {
   margin-right: 6px;
 }
+
+@media (max-width: 640px) {
+  .post {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .post-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .post-media-grid.multi {
+    grid-template-columns: 1fr;
+  }
+
+  .post-actions {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .action-button {
+    font-size: 14px;
+  }
+}

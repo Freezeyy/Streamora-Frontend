@@ -319,6 +319,50 @@
     display: none;
   }
 
+  .landing-nav {
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .landing-logo {
+    height: 2.5rem;
+  }
+
+  .landing-nav-actions .landing-btn {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
+  .landing-glow {
+    width: 240px;
+    height: 240px;
+    opacity: 0.35;
+  }
+
+  .landing-glow--left {
+    left: -80px;
+  }
+
+  .landing-glow--right {
+    right: -60px;
+  }
+
+  .landing-main {
+    padding: 0.5rem 1rem 2rem;
+  }
+
+  .landing-hero {
+    padding: 1.25rem 0 1.5rem;
+  }
+
+  .landing-title {
+    font-size: clamp(1.85rem, 9vw, 2.4rem);
+  }
+
+  .landing-lead {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
   .landing-stats {
     grid-template-columns: 1fr;
     max-width: none;
@@ -330,5 +374,19 @@
 
   .landing-btn--large {
     width: 100%;
+  }
+
+  .landing-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-showcase {
+    padding: 1rem;
+  }
+
+  .landing-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1rem 1.5rem;
   }
 }

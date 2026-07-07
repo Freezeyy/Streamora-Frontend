@@ -159,4 +159,24 @@
 .profile-private-notice p {
   margin: 0;
 }
+
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 14px;
+  }
+
+  .profile-pic {
+    width: 96px;
+    height: 96px;
+  }
+
+  .profile-name {
+    font-size: 1.35rem;
+  }
+
+  .profile-stats span {
+    display: block;
+    margin: 4px 0;
+  }
+}
   

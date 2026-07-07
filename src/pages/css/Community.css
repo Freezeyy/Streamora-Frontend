@@ -111,3 +111,19 @@
   font-size: 0.8rem;
   color: var(--snow-text-muted);
 }
+
+@media (max-width: 640px) {
+  .community-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .community-create-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .community-grid {
+    grid-template-columns: 1fr;
+  }
+}

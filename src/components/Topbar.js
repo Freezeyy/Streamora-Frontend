@@ -90,7 +90,7 @@ function Topbar({ sidebarToggle, onToggleCollapse, isCollapsed }) {
         </button>
       )} */}
 
-      <div className="flex items-center justify-center flex-1 mx-4" ref={searchRef}>
+      <div className="topbar-search-area" ref={searchRef}>
         <div className="w-full max-w-md relative search-wrapper">
           <input
             type="text"

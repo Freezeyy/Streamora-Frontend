@@ -86,20 +86,22 @@
   border-left: 1px solid rgba(255, 255, 255, 0.28);
 }
 
-/* Two-column dashboard: main (left) wider + right sidebar */
-.layout-body--split .layout-main-column {
-  flex: 0 0 68%;
-  max-width: 68%;
-}
-
-.layout-body--split .layout-right-column {
-  display: flex;
-  flex: 0 0 32%;
-  max-width: 32%;
-}
-
 .layout-right-column {
   display: none;
+}
+
+/* Two-column feed/dashboard — desktop only */
+@media (min-width: 1024px) {
+  .layout-body--split .layout-main-column {
+    flex: 0 0 68%;
+    max-width: 68%;
+  }
+
+  .layout-body--split .layout-right-column {
+    display: flex;
+    flex: 0 0 32%;
+    max-width: 32%;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -115,6 +117,19 @@
 @media (max-width: 1023px) {
   .layout-main {
     margin-left: 0;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .layout-body--split .layout-main-column {
+    flex: 1 1 auto;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .layout-main-column .layout-column-content {
+    padding: 1rem 0.75rem;
   }
 }
 
@@ -312,6 +327,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
   transition: left 0.3s ease;
+  gap: 0.25rem;
 }
 
 @media (min-width: 1024px) {

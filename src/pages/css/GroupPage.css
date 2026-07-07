@@ -209,3 +209,27 @@
   max-width: 480px;
   margin: 0 auto;
 }
+
+@media (max-width: 640px) {
+  .group-hero {
+    padding: 16px;
+  }
+
+  .group-hero-top {
+    flex-direction: column;
+  }
+
+  .group-hero-actions {
+    width: 100%;
+  }
+
+  .group-action-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .group-admin-member {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

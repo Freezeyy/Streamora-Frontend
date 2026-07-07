@@ -163,3 +163,9 @@
 .settings-whatsapp-section .settings-section-desc {
   margin-bottom: 12px;
 }
+
+@media (max-width: 640px) {
+  .settings-section {
+    padding: 16px;
+  }
+}
