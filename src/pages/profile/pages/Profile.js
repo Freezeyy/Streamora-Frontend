@@ -30,7 +30,7 @@ const Profile = () => {
     if (profile) {
       setNewBio(profile.bio || "");
     }
-  }, [profile?.id, profile?.bio]);
+  }, [profile]);
 
   const followStatus = profile?.viewerFollowStatus
     || (isOwnProfile ? "self" : "none");

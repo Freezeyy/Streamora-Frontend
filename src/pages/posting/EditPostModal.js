@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { FaFileAlt, FaImage, FaTimes, FaVideo } from 'react-icons/fa';
-import { API_BASE, getFileLabel, getMediaCategory, DOCUMENT_FILE_ACCEPT } from './postUtils';
+import { API_BASE, getMediaCategory, DOCUMENT_FILE_ACCEPT } from './postUtils';
 import FileAttachmentCard from './FileAttachmentCard';
 import './css/MentionText.css';
 import './css/EditPostModal.css';

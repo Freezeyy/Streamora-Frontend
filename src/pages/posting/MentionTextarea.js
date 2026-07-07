@@ -43,7 +43,6 @@ const MentionTextarea = ({
   );
 
   const activeResults = panelMentionOpen ? panelResults : inlineResults;
-  const activeLoading = panelMentionOpen ? panelLoading : inlineLoading;
   const mentionUiOpen = inlineMentionOpen || panelMentionOpen;
 
   useEffect(() => {

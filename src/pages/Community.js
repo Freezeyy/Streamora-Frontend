@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaPlus, FaUsers, FaGlobe, FaLock } from 'react-icons/fa';
 import Layout from '../components/Layout';
@@ -16,7 +16,7 @@ const Community = () => {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     const [mine, discover] = await Promise.all([
       listGroups({ mine: true }),
@@ -25,11 +25,11 @@ const Community = () => {
     setMyGroups(mine);
     setDiscoverGroups(discover);
     setLoading(false);
-  };
+  }, [listGroups]);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   const handleCreate = async (payload) => {
     setCreating(true);

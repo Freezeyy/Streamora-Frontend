@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSearch, FaBars, FaChevronLeft, FaChevronRight, FaUser } from "react-icons/fa";
+import { FaSearch, FaBars, FaUser } from "react-icons/fa";
 import useLogout from "./hooks/useLogout";
 import useUserProfile from "./hooks/useUserProfile";
 import useUserSearch from "./hooks/useUserSearch";

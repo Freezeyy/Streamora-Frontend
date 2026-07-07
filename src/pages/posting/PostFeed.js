@@ -18,18 +18,30 @@ const PostFeed = ({
 }) => {
   const isProfileMode = profilePosts != null;
   const isGroupMode = Boolean(groupId);
-  const postState = usePost(isProfileMode || isGroupMode);
+  const {
+    setPosts,
+    deletePost,
+    updatePost,
+    createPost,
+    loading: feedLoading,
+    creating,
+    error,
+    posts,
+    fetchPosts,
+    toggleLike,
+    addComment,
+  } = usePost(isProfileMode || isGroupMode);
 
   useEffect(() => {
     if (isProfileMode) {
-      postState.setPosts(profilePosts ?? []);
+      setPosts(profilePosts ?? []);
     } else if (isGroupMode) {
-      postState.setPosts(groupPosts ?? []);
+      setPosts(groupPosts ?? []);
     }
-  }, [isProfileMode, isGroupMode, profilePosts, groupPosts, postState.setPosts]);
+  }, [isProfileMode, isGroupMode, profilePosts, groupPosts, setPosts]);
 
   const handleDeletePost = async (postId) => {
-    const success = await postState.deletePost(postId);
+    const success = await deletePost(postId);
     if (success) {
       if (isProfileMode) onPostsMutated?.();
       if (isGroupMode) onPostsRefresh?.();
@@ -38,7 +50,7 @@ const PostFeed = ({
   };
 
   const handleUpdatePost = async (postId, payload) => {
-    const result = await postState.updatePost(postId, payload);
+    const result = await updatePost(postId, payload);
     if (result) {
       if (isProfileMode) onPostsMutated?.();
       if (isGroupMode) onPostsRefresh?.();
@@ -50,34 +62,34 @@ const PostFeed = ({
     if (isGroupMode && createGroupPost) {
       return createGroupPost(text, files);
     }
-    return postState.createPost(text, files);
+    return createPost(text, files);
   };
 
-  const loading = isGroupMode ? postsLoading : (isProfileMode ? false : postState.loading);
+  const loading = isGroupMode ? postsLoading : (isProfileMode ? false : feedLoading);
 
   return (
     <>
       {showComposer && (
         <InputPost
           createPost={handleCreate}
-          creating={postState.creating}
-          error={postState.error}
+          creating={creating}
+          error={error}
           composerLabel={isGroupMode ? 'Post to group (requires admin approval)' : undefined}
         />
       )}
       <OutputPost
         name={name}
         loggedInUserId={isProfileMode ? null : loggedInUserId}
-        posts={postState.posts}
+        posts={posts}
         loading={loading}
-        error={postState.error}
-        fetchPosts={isGroupMode ? undefined : postState.fetchPosts}
-        toggleLike={postState.toggleLike}
-        addComment={postState.addComment}
+        error={error}
+        fetchPosts={isGroupMode ? undefined : fetchPosts}
+        toggleLike={toggleLike}
+        addComment={addComment}
         updatePost={handleUpdatePost}
         deletePost={handleDeletePost}
         canModerateGroup={canModerateGroup}
-        setPosts={postState.setPosts}
+        setPosts={setPosts}
       />
     </>
   );

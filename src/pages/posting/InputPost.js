@@ -41,7 +41,6 @@ const InputPost = ({ createPost, creating, error, composerLabel }) => {
   );
 
   const activeResults = panelMentionOpen ? panelResults : inlineResults;
-  const activeLoading = panelMentionOpen ? panelLoading : inlineLoading;
 
   useEffect(() => {
     const urls = selectedFiles.map((file) => {
