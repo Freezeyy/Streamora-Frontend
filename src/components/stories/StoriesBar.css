@@ -286,6 +286,7 @@
   cursor: grab;
   user-select: none;
   max-width: 85%;
+  touch-action: none;
 }
 
 .story-composer-text.active {
@@ -418,4 +419,42 @@
 .story-composer-share:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .story-composer-backdrop {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .story-composer-frame {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .story-composer-header {
+    padding: max(10px, env(safe-area-inset-top, 0px)) 12px 0;
+    margin-bottom: 8px;
+  }
+
+  .story-composer-stage {
+    border-radius: 0;
+  }
+
+  .story-composer-controls {
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom, 0px));
+    margin-top: 0;
+  }
+
+  .story-composer-text-input {
+    min-width: 120px;
+    font-size: 16px;
+  }
+
+  .story-composer-zoom-hint {
+    display: none;
+  }
 }

@@ -167,6 +167,7 @@ const StoryViewer = ({
   };
 
   const handlePointerDown = (e) => {
+    if (e.target.closest('.story-viewer-header, .story-viewer-close')) return;
     if (e.button !== undefined && e.button !== 0) return;
     pointerDownAt.current = Date.now();
     isHoldingRef.current = true;
@@ -180,6 +181,8 @@ const StoryViewer = ({
   };
 
   const handleStageClick = (e) => {
+    if (e.target.closest('.story-viewer-header, .story-viewer-close')) return;
+
     const heldFor = Date.now() - pointerDownAt.current;
     if (heldFor >= HOLD_THRESHOLD_MS) return;
 
@@ -196,30 +199,6 @@ const StoryViewer = ({
   return createPortal(
     <div className="story-viewer-backdrop" role="dialog" aria-modal="true">
       <div className="story-viewer">
-        <div className="story-viewer-progress-row">
-          {group.stories.map((s, i) => (
-            <div key={s.id} className="story-viewer-progress-track">
-              <div
-                className="story-viewer-progress-fill"
-                style={{
-                  width: i < storyIndex ? '100%' : i === storyIndex ? `${progress}%` : '0%',
-                  animationPlayState: isPaused ? 'paused' : 'running',
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="story-viewer-header">
-          {avatarSrc && (
-            <img src={avatarSrc} alt="" className="story-viewer-header-avatar" />
-          )}
-          <span className="story-viewer-header-name">{group.user.name}</span>
-          <button type="button" className="story-viewer-close" onClick={onClose} aria-label="Close">
-            ×
-          </button>
-        </div>
-
         <div
           className={`story-stage story-viewer-stage ${isPaused ? 'story-viewer-stage--paused' : ''}`}
           onPointerDown={handlePointerDown}
@@ -228,6 +207,41 @@ const StoryViewer = ({
           onPointerCancel={handlePointerUp}
           onClick={handleStageClick}
         >
+          <div className="story-viewer-chrome">
+            <div className="story-viewer-progress-row">
+              {group.stories.map((s, i) => (
+                <div key={s.id} className="story-viewer-progress-track">
+                  <div
+                    className="story-viewer-progress-fill"
+                    style={{
+                      width: i < storyIndex ? '100%' : i === storyIndex ? `${progress}%` : '0%',
+                      animationPlayState: isPaused ? 'paused' : 'running',
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="story-viewer-header">
+              {avatarSrc && (
+                <img src={avatarSrc} alt="" className="story-viewer-header-avatar" />
+              )}
+              <span className="story-viewer-header-name">{group.user.name}</span>
+              <button
+                type="button"
+                className="story-viewer-close"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
           {story.media_type === 'video' ? (
             <video
               ref={videoRef}

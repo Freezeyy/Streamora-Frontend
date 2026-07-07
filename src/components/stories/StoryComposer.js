@@ -17,47 +17,71 @@ const DraggableText = ({
   containerRef,
 }) => {
   const dragState = useRef(null);
+  const elementRef = useRef(null);
 
-  const handleMouseDown = (event) => {
+  const endDrag = useCallback((pointerId) => {
+    if (!dragState.current || dragState.current.pointerId !== pointerId) return;
+
+    dragState.current = null;
+
+    if (elementRef.current) {
+      try {
+        elementRef.current.releasePointerCapture(pointerId);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  const handlePointerDown = (event) => {
+    if (event.target.closest('.story-composer-text-input, .story-composer-text-delete')) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
     onSelect(overlay.id);
 
     dragState.current = {
+      pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
       startOverlayX: overlay.x,
       startOverlayY: overlay.y,
     };
 
-    const handleMouseMove = (moveEvent) => {
-      if (!dragState.current || !containerRef.current) return;
+    if (elementRef.current) {
+      elementRef.current.setPointerCapture(event.pointerId);
+    }
+  };
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const dx = ((moveEvent.clientX - dragState.current.startX) / rect.width) * 100;
-      const dy = ((moveEvent.clientY - dragState.current.startY) / rect.height) * 100;
+  const handlePointerMove = (event) => {
+    if (!dragState.current || dragState.current.pointerId !== event.pointerId) return;
+    if (!containerRef.current) return;
 
-      onChange(overlay.id, {
-        x: clamp(dragState.current.startOverlayX + dx, 5, 95),
-        y: clamp(dragState.current.startOverlayY + dy, 5, 95),
-      });
-    };
+    const rect = containerRef.current.getBoundingClientRect();
+    const dx = ((event.clientX - dragState.current.startX) / rect.width) * 100;
+    const dy = ((event.clientY - dragState.current.startY) / rect.height) * 100;
 
-    const handleMouseUp = () => {
-      dragState.current = null;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
+    onChange(overlay.id, {
+      x: clamp(dragState.current.startOverlayX + dx, 5, 95),
+      y: clamp(dragState.current.startOverlayY + dy, 5, 95),
+    });
+  };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+  const handlePointerUp = (event) => {
+    endDrag(event.pointerId);
   };
 
   return (
     <div
+      ref={elementRef}
       className={`story-composer-text ${isActive ? 'active' : ''}`}
       style={{ left: `${overlay.x}%`, top: `${overlay.y}%` }}
-      onMouseDown={handleMouseDown}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
       {isActive ? (
         <input

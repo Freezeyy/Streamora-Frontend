@@ -73,8 +73,24 @@
 .story-viewer-progress-row {
   display: flex;
   gap: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   flex-shrink: 0;
+}
+
+.story-viewer-chrome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  padding: 12px 12px 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.2) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.story-viewer-chrome .story-viewer-header,
+.story-viewer-chrome .story-viewer-close {
+  pointer-events: auto;
 }
 
 .story-viewer-progress-track {
@@ -83,6 +99,7 @@
   background: rgba(255, 255, 255, 0.35);
   border-radius: 2px;
   overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
 .story-viewer-progress-fill {
@@ -95,7 +112,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
   flex-shrink: 0;
 }
 
@@ -182,6 +199,44 @@
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .story-viewer-backdrop {
+    padding: 0;
+  }
+
+  .story-viewer {
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .story-viewer-stage {
+    border-radius: 0;
+  }
+
+  .story-viewer-chrome {
+    padding: max(10px, env(safe-area-inset-top, 0px)) 10px 0;
+  }
+
+  .story-viewer-progress-track {
+    height: 4px;
+  }
+
+  .story-viewer-header-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .story-viewer-header-name {
+    font-size: 14px;
+  }
+
+  .story-viewer-hint {
+    display: none;
+  }
 }
 
 /* Story rings in the bar */
