@@ -10,6 +10,7 @@ const useStories = () => {
   const [storyGroups, setStoryGroups] = useState([]);
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchStoryFeed = useCallback(async () => {
@@ -20,8 +21,10 @@ const useStories = () => {
         headers: getAuthHeaders(),
       });
       setStoryGroups(response.data);
+      return response.data;
     } catch (err) {
       setError(err.response?.data?.error || err.message);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -52,12 +55,18 @@ const useStories = () => {
 
   const deleteStory = useCallback(async (storyId) => {
     try {
+      setDeleting(true);
+      setError(null);
       await axios.delete(`${API_BASE}/api/stories/${storyId}`, {
         headers: getAuthHeaders(),
       });
-      await fetchStoryFeed();
+      const groups = await fetchStoryFeed();
+      return { ok: true, groups: groups || [] };
     } catch (err) {
       setError(err.response?.data?.error || err.message);
+      return { ok: false, groups: null };
+    } finally {
+      setDeleting(false);
     }
   }, [fetchStoryFeed]);
 
@@ -65,6 +74,7 @@ const useStories = () => {
     storyGroups,
     loading,
     creating,
+    deleting,
     error,
     fetchStoryFeed,
     createStory,

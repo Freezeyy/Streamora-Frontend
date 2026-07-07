@@ -2,6 +2,7 @@ import React, {
   useEffect, useCallback, useState, useRef,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { FaTrash } from 'react-icons/fa';
 import StoryTextOverlays from './StoryTextOverlays';
 import { getMediaTransform } from './storyOverlays';
 import { MAX_STORY_VIDEO_SECONDS } from './storyMediaUtils';
@@ -27,6 +28,9 @@ const StoryViewer = ({
   storyIndex,
   onClose,
   onNavigate,
+  canDelete = false,
+  onDelete,
+  deleting = false,
 }) => {
   const [progress, setProgress] = useState(0);
   const [replayKey, setReplayKey] = useState(0);
@@ -256,7 +260,7 @@ const StoryViewer = ({
   };
 
   const handlePointerDown = (e) => {
-    if (e.target.closest('.story-viewer-header, .story-viewer-close')) return;
+    if (e.target.closest('.story-viewer-header, .story-viewer-header-actions, .story-viewer-close, .story-viewer-delete')) return;
     if (e.button !== undefined && e.button !== 0) return;
     pointerDownAt.current = Date.now();
     isHoldingRef.current = true;
@@ -270,7 +274,7 @@ const StoryViewer = ({
   };
 
   const handleStageClick = (e) => {
-    if (e.target.closest('.story-viewer-header, .story-viewer-close')) return;
+    if (e.target.closest('.story-viewer-header, .story-viewer-header-actions, .story-viewer-close, .story-viewer-delete')) return;
     if (!mediaReady) return;
 
     const heldFor = Date.now() - pointerDownAt.current;
@@ -284,6 +288,21 @@ const StoryViewer = ({
     } else {
       goNext();
     }
+  };
+
+  const handleDeleteClick = async (e) => {
+    e.stopPropagation();
+    if (!onDelete || deleting) return;
+
+    pausePlayback();
+
+    const confirmed = window.confirm('Delete this story?');
+    if (!confirmed) {
+      resumePlayback();
+      return;
+    }
+
+    await onDelete(story.id);
   };
 
   return createPortal(
@@ -316,18 +335,33 @@ const StoryViewer = ({
                 <img src={avatarSrc} alt="" className="story-viewer-header-avatar" />
               )}
               <span className="story-viewer-header-name">{group.user.name}</span>
-              <button
-                type="button"
-                className="story-viewer-close"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-                onPointerDown={(e) => e.stopPropagation()}
-                aria-label="Close"
-              >
-                ×
-              </button>
+              <div className="story-viewer-header-actions">
+                {canDelete && (
+                  <button
+                    type="button"
+                    className="story-viewer-delete"
+                    onClick={handleDeleteClick}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    disabled={deleting}
+                    aria-label="Delete story"
+                    title="Delete this story"
+                  >
+                    <FaTrash size={14} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="story-viewer-close"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           </div>
 

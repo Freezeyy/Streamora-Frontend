@@ -89,7 +89,7 @@
 }
 
 .story-viewer-chrome .story-viewer-header,
-.story-viewer-chrome .story-viewer-close {
+.story-viewer-chrome .story-viewer-header-actions {
   pointer-events: auto;
 }
 
@@ -126,11 +126,23 @@
 
 .story-viewer-header-name {
   flex: 1;
+  min-width: 0;
   color: #fff;
   font-weight: 600;
   font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+.story-viewer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.story-viewer-delete,
 .story-viewer-close {
   width: 36px;
   height: 36px;
@@ -138,16 +150,34 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   color: #fff;
-  font-size: 24px;
-  line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
+.story-viewer-delete:hover:not(:disabled),
 .story-viewer-close:hover {
   background: rgba(255, 255, 255, 0.35);
+}
+
+.story-viewer-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.story-viewer-delete {
+  background: rgba(220, 38, 38, 0.75);
+}
+
+.story-viewer-delete:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.9);
+}
+
+.story-viewer-close {
+  font-size: 24px;
+  line-height: 1;
 }
 
 .story-viewer-stage {

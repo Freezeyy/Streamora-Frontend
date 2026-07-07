@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 
 import useStories from './hooks/useStories';
 import CreateStory from './CreateStory';
@@ -29,9 +29,11 @@ const StoriesBar = () => {
     storyGroups,
     loading,
     creating,
+    deleting,
     error,
     fetchStoryFeed,
     createStory,
+    deleteStory,
   } = useStories();
 
   const [viewer, setViewer] = useState(null);
@@ -58,6 +60,7 @@ const StoriesBar = () => {
       groups: [ownStoryGroup],
       groupIndex: 0,
       storyIndex: 0,
+      isOwn: true,
     });
   };
 
@@ -66,8 +69,40 @@ const StoriesBar = () => {
       groups: otherStoryGroups,
       groupIndex,
       storyIndex: 0,
+      isOwn: false,
     });
   };
+
+  const handleDeleteStory = useCallback(async (storyId) => {
+    const currentViewer = viewer;
+    if (!currentViewer?.isOwn) return false;
+
+    const result = await deleteStory(storyId);
+    if (!result.ok) return false;
+
+    const updatedOwnGroup = (result.groups || []).find(
+      (group) => String(group.user.id) === String(loggedInUserId),
+    );
+
+    if (!updatedOwnGroup?.stories?.length) {
+      setViewer(null);
+      return true;
+    }
+
+    const nextIndex = Math.min(
+      currentViewer.storyIndex,
+      updatedOwnGroup.stories.length - 1,
+    );
+
+    setViewer({
+      groups: [updatedOwnGroup],
+      groupIndex: 0,
+      storyIndex: nextIndex,
+      isOwn: true,
+    });
+
+    return true;
+  }, [viewer, deleteStory, loggedInUserId]);
 
   const hasOtherStories = otherStoryGroups.length > 0;
 
@@ -126,6 +161,9 @@ const StoriesBar = () => {
           groups={viewer.groups}
           groupIndex={viewer.groupIndex}
           storyIndex={viewer.storyIndex}
+          canDelete={viewer.isOwn}
+          deleting={deleting}
+          onDelete={handleDeleteStory}
           onClose={() => setViewer(null)}
           onNavigate={(groupIndex, storyIndex) => (
             setViewer((prev) => ({ ...prev, groupIndex, storyIndex }))
