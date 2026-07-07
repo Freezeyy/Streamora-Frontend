@@ -6,7 +6,7 @@ import StoryTextOverlays from './StoryTextOverlays';
 import { getMediaTransform } from './storyOverlays';
 import './StoryViewer.css';
 
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../config/api';
 const STORY_DURATION_MS = 7000;
 const REPLAY_THRESHOLD = 15;
 const HOLD_THRESHOLD_MS = 200;

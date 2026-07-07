@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { API_BASE } from '../../../config/api';
 
 const useOwnProfile = (userId) => {
   const [profile, setProfile] = useState(null);
@@ -16,7 +17,7 @@ const useOwnProfile = (userId) => {
       setLoading(true);
       setError(null);
       const response = await fetch(
-        `http://localhost:3000/api/user/${userId}?with[]=followers&with[]=followings&with[]=posts`,
+        `${API_BASE}/api/user/${userId}?with[]=followers&with[]=followings&with[]=posts`,
         {
           method: 'GET',
           headers: {

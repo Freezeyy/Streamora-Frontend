@@ -5,7 +5,7 @@ import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 import './css/LikesModal.css';
 
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../config/api';
 
 const getInitials = (name) => {
   if (!name) return '?';

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Snowfall from '../../../components/Snowfall';
 
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../../config/api';
 
 const VerifyEmail = () => {
   const [status, setStatus] = useState('loading');

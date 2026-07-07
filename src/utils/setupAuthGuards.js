@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { getAuthToken, handleUnauthorized } from './auth';
-
-const API_HOST = 'http://localhost:3000';
+import { API_BASE } from '../config/api';
 
 function isProtectedApiRequest(url) {
   const value = String(url || '');
-  return value.includes(`${API_HOST}/api/`) || value.startsWith('/api/');
+  return value.includes(`${API_BASE}/api/`) || value.startsWith('/api/');
 }
 
 axios.interceptors.response.use(

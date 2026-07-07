@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../../config/api';
 
 const usePost = (skipInitialFetch = false) => {
   const [loading, setLoading] = useState(!skipInitialFetch);

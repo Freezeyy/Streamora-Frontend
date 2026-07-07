@@ -1,5 +1,5 @@
-// src/hooks/useUserProfile.js
 import { useState, useEffect, useRef } from "react";
+import { API_BASE } from "../../config/api";
 
 const useUserProfile = (userId) => {
   const [profile, setProfile] = useState(null);
@@ -16,7 +16,7 @@ const useUserProfile = (userId) => {
     const fetchProfile = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/user/${userId}?with[]=followers&with[]=followings`,
+          `${API_BASE}/api/user/${userId}?with[]=followers&with[]=followings`,
           {
             method: "GET",
             headers: {

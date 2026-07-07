@@ -1,4 +1,4 @@
-export const API_BASE = 'http://localhost:3000';
+export { API_BASE } from '../../config/api';
 
 export const DOCUMENT_FILE_ACCEPT = [
   '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.txt', '.rtf',

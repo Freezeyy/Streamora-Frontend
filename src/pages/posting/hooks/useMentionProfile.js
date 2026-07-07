@@ -5,8 +5,7 @@ import {
   getCachedMentionProfile,
   invalidateMentionProfile,
 } from '../mentionProfileCache';
-
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../../config/api';
 
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${localStorage.getItem('token')}`,

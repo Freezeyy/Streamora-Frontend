@@ -1,5 +1,5 @@
-// src/hooks/useResetPassword.js
 import { useState } from 'react';
+import { API_BASE } from '../../../config/api';
 
 const useResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -16,7 +16,7 @@ const useResetPassword = () => {
   const resetPassword = async () => {
     console.log('Resetting password...'); // Debug log
 
-    const response = await fetch('http://localhost:3000/reset-password', {
+    const response = await fetch(`${API_BASE}/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

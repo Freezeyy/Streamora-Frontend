@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_BASE = 'http://localhost:3000';
+import { API_BASE } from '../../../config/api';
 
 const useLogin = () => {
   const [email, setEmail] = useState('');
