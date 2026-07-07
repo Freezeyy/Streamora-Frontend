@@ -13,6 +13,7 @@ import { API_BASE } from '../../config/api';
 const IMAGE_DURATION_MS = 7000;
 const REPLAY_THRESHOLD = 15;
 const HOLD_THRESHOLD_MS = 200;
+const DISMISS_THRESHOLD_PX = 100;
 
 const getAvatarSrc = (user, getInitials) => {
   if (user?.image) return user.image;
@@ -37,6 +38,7 @@ const StoryViewer = ({
   const [isPaused, setIsPaused] = useState(false);
   const [mediaReady, setMediaReady] = useState(false);
   const [durationMs, setDurationMs] = useState(IMAGE_DURATION_MS);
+  const [dismissOffset, setDismissOffset] = useState(0);
 
   const group = groups[groupIndex];
   const story = group?.stories?.[storyIndex];
@@ -48,6 +50,15 @@ const StoryViewer = ({
   const isHoldingRef = useRef(false);
   const durationMsRef = useRef(IMAGE_DURATION_MS);
   const mediaReadyRef = useRef(false);
+  const dismissDragRef = useRef({
+    active: false,
+    isDismissDrag: false,
+    pointerId: null,
+    startX: 0,
+    startY: 0,
+  });
+  const dismissOffsetRef = useRef(0);
+  const skipTapRef = useRef(false);
   const timerRefs = useRef({
     interval: null,
     timeout: null,
@@ -184,6 +195,8 @@ const StoryViewer = ({
     setIsPaused(false);
     setDurationMs(IMAGE_DURATION_MS);
     timerRefs.current.remaining = IMAGE_DURATION_MS;
+    dismissOffsetRef.current = 0;
+    setDismissOffset(0);
     clearPlaybackTimers();
   }, [groupIndex, storyIndex, replayKey, clearPlaybackTimers]);
 
@@ -201,6 +214,21 @@ const StoryViewer = ({
 
     return undefined;
   }, [mediaReady, isPaused, isVideo, groupIndex, storyIndex, replayKey]);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    const prevOverscroll = document.body.style.overscrollBehavior;
+    const prevHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+    document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+    document.documentElement.style.overscrollBehavior = 'none';
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.overscrollBehavior = prevOverscroll;
+      document.documentElement.style.overscrollBehavior = prevHtmlOverscroll;
+    };
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -262,20 +290,78 @@ const StoryViewer = ({
   const handlePointerDown = (e) => {
     if (e.target.closest('.story-viewer-header, .story-viewer-header-actions, .story-viewer-close, .story-viewer-delete')) return;
     if (e.button !== undefined && e.button !== 0) return;
+
     pointerDownAt.current = Date.now();
     isHoldingRef.current = true;
+    skipTapRef.current = false;
+
+    dismissDragRef.current = {
+      active: true,
+      isDismissDrag: false,
+      pointerId: e.pointerId,
+      startX: e.clientX,
+      startY: e.clientY,
+    };
+
     pausePlayback();
+  };
+
+  const handlePointerMove = (e) => {
+    const dismiss = dismissDragRef.current;
+    if (!dismiss.active || dismiss.pointerId !== e.pointerId) return;
+
+    const dy = e.clientY - dismiss.startY;
+    const dx = e.clientX - dismiss.startX;
+
+    if (!dismiss.isDismissDrag) {
+      if (dy > 12 && dy > Math.abs(dx) * 1.2) {
+        dismissDragRef.current.isDismissDrag = true;
+        skipTapRef.current = true;
+      } else {
+        return;
+      }
+    }
+
+    if (dy > 0) {
+      e.preventDefault();
+      dismissOffsetRef.current = dy;
+      setDismissOffset(dy);
+    }
   };
 
   const handlePointerUp = () => {
     if (!isHoldingRef.current) return;
+
+    const dismiss = dismissDragRef.current;
+
+    if (dismiss.isDismissDrag) {
+      if (dismissOffsetRef.current >= DISMISS_THRESHOLD_PX) {
+        onClose();
+      } else {
+        dismissOffsetRef.current = 0;
+        setDismissOffset(0);
+        resumePlayback();
+      }
+
+      dismissDragRef.current = {
+        active: false,
+        isDismissDrag: false,
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+      };
+      isHoldingRef.current = false;
+      return;
+    }
+
     isHoldingRef.current = false;
+    dismissDragRef.current.active = false;
     resumePlayback();
   };
 
   const handleStageClick = (e) => {
     if (e.target.closest('.story-viewer-header, .story-viewer-header-actions, .story-viewer-close, .story-viewer-delete')) return;
-    if (!mediaReady) return;
+    if (!mediaReady || skipTapRef.current || dismissOffsetRef.current > 8) return;
 
     const heldFor = Date.now() - pointerDownAt.current;
     if (heldFor >= HOLD_THRESHOLD_MS) return;
@@ -307,10 +393,17 @@ const StoryViewer = ({
 
   return createPortal(
     <div className="story-viewer-backdrop" role="dialog" aria-modal="true">
-      <div className="story-viewer">
+      <div
+        className={`story-viewer ${dismissOffset > 0 ? 'story-viewer--dragging' : ''}`}
+        style={{
+          transform: dismissOffset > 0 ? `translateY(${dismissOffset}px)` : undefined,
+          opacity: dismissOffset > 0 ? Math.max(0.35, 1 - dismissOffset / 420) : undefined,
+        }}
+      >
         <div
           className={`story-stage story-viewer-stage ${isPaused ? 'story-viewer-stage--paused' : ''} ${!mediaReady ? 'story-viewer-stage--loading' : ''}`}
           onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerUp}
           onPointerCancel={handlePointerUp}

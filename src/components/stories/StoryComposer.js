@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { FaTimes, FaPlus, FaTrash, FaArrowsAlt } from 'react-icons/fa';
+import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import { buildOverlaysPayload } from './storyOverlays';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -36,6 +36,8 @@ const DraggableText = ({
   }, []);
 
   const startDrag = (event) => {
+    if (event.target.closest('.story-composer-text-delete')) return;
+
     event.preventDefault();
     event.stopPropagation();
     onSelect(overlay.id);
@@ -64,6 +66,10 @@ const DraggableText = ({
 
     didDragRef.current = true;
 
+    if (document.activeElement?.classList?.contains('story-composer-text-input')) {
+      document.activeElement.blur();
+    }
+
     const rect = containerRef.current.getBoundingClientRect();
     const dx = ((event.clientX - dragState.current.startX) / rect.width) * 100;
     const dy = ((event.clientY - dragState.current.startY) / rect.height) * 100;
@@ -75,7 +81,13 @@ const DraggableText = ({
   };
 
   const handlePointerUp = (event) => {
+    const wasDrag = didDragRef.current;
     endDrag(event.pointerId);
+
+    if (!wasDrag && isActive) {
+      const input = elementRef.current?.querySelector('.story-composer-text-input');
+      input?.focus();
+    }
   };
 
   const handleTap = (event) => {
@@ -93,36 +105,23 @@ const DraggableText = ({
       ref={elementRef}
       className={`story-composer-text ${isActive ? 'active' : ''}`}
       style={{ left: `${overlay.x}%`, top: `${overlay.y}%` }}
+      onPointerDown={startDrag}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       onClick={handleTap}
     >
-      <button
-        type="button"
-        className="story-composer-text-drag-handle"
-        aria-label="Drag text"
-        onPointerDown={startDrag}
-      >
-        <FaArrowsAlt size={10} />
-      </button>
-
       {isActive ? (
         <input
           type="text"
           value={overlay.text}
           onChange={(e) => onChange(overlay.id, { text: e.target.value })}
           onClick={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
           className="story-composer-text-input"
           placeholder="Type something..."
-          autoFocus
         />
       ) : (
-        <span
-          onPointerDown={startDrag}
-          className="story-composer-text-body"
-        >
+        <span className="story-composer-text-body">
           {overlay.text || 'Tap to edit'}
         </span>
       )}
@@ -160,7 +159,20 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     setMediaTransform({ scale: 1, x: 0, y: 0 });
-    return () => URL.revokeObjectURL(url);
+
+    const prevOverflow = document.body.style.overflow;
+    const prevOverscroll = document.body.style.overscrollBehavior;
+    const prevHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+    document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+    document.documentElement.style.overscrollBehavior = 'none';
+
+    return () => {
+      URL.revokeObjectURL(url);
+      document.body.style.overflow = prevOverflow;
+      document.body.style.overscrollBehavior = prevOverscroll;
+      document.documentElement.style.overscrollBehavior = prevHtmlOverscroll;
+    };
   }, [file]);
 
   const updateTransform = useCallback((updates) => {
@@ -323,7 +335,6 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
           <div
             className="story-composer-overlays"
             onClick={(e) => e.stopPropagation()}
-            onPointerDown={(e) => e.stopPropagation()}
           >
             {overlays.map((overlay) => (
               <DraggableText
@@ -353,7 +364,7 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
                 className="story-composer-zoom-slider"
                 aria-label="Zoom image"
               />
-              <span className="story-composer-zoom-hint">Drag image to reposition · use handle to move text</span>
+              <span className="story-composer-zoom-hint">Drag image to reposition · drag text to move it</span>
             </div>
           )}
 
