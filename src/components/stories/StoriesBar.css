@@ -1,38 +1,27 @@
 .stories-section {
+  --story-ring-size: 72px;
+  --story-ring-inner: 62px;
+  --story-item-width: 72px;
+
   width: 100%;
   max-width: 1200px;
   margin: 0 auto 20px;
   padding: 16px 16px 12px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 @media (max-width: 640px) {
   .stories-section {
-    padding: 12px 0 10px;
+    --story-ring-size: 68px;
+    --story-ring-inner: 58px;
+    --story-item-width: 68px;
+
+    padding: 12px 12px 10px;
     margin-bottom: 14px;
   }
 
   .stories-row {
-    gap: 12px;
-  }
-
-  .create-story-button,
-  .create-story-label {
-    width: 68px;
-    max-width: 68px;
-  }
-
-  .create-story-avatar-wrap,
-  .story-ring {
-    width: 64px;
-    height: 64px;
-  }
-
-  .create-story-avatar,
-  .create-story-avatar.placeholder,
-  .story-ring-inner {
-    width: 56px;
-    height: 56px;
+    gap: 10px;
   }
 }
 
@@ -77,8 +66,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  width: 80px;
+  gap: 6px;
+  width: var(--story-item-width);
 }
 
 .create-story-avatar-btn {
@@ -98,16 +87,17 @@
 
 .create-story-avatar-wrap {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: var(--story-ring-size);
+  height: var(--story-ring-size);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .create-story-avatar {
-  width: 62px;
-  height: 62px;
+  width: var(--story-ring-inner);
+  height: var(--story-ring-inner);
   border-radius: 50%;
   object-fit: cover;
   border: none;
@@ -115,17 +105,17 @@
 
 .create-story-avatar.placeholder {
   background: #e5e7eb;
-  width: 62px;
-  height: 62px;
+  width: var(--story-ring-inner);
+  height: var(--story-ring-inner);
   border-radius: 50%;
 }
 
 .create-story-plus {
   position: absolute;
-  right: 2px;
-  bottom: 2px;
-  width: 22px;
-  height: 22px;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--snow-primary);
   color: #fff;
@@ -145,14 +135,16 @@
 }
 
 .create-story-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--snow-text);
   font-weight: 500;
   text-align: center;
-  max-width: 80px;
+  width: var(--story-item-width);
+  max-width: var(--story-item-width);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .hidden {
@@ -161,16 +153,16 @@
 
 .story-ring {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: var(--story-ring-size);
+  height: var(--story-ring-size);
   flex-shrink: 0;
 }
 
 .story-ring--plain .story-ring-inner {
-  width: 100%;
-  height: 100%;
+  width: var(--story-ring-inner);
+  height: var(--story-ring-inner);
   border-radius: 50%;
-  padding: 3px;
+  padding: 0;
   background: #e5e7eb;
   display: flex;
   align-items: center;
@@ -186,12 +178,15 @@
 .story-ring-svg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .story-ring-inner {
   position: relative;
-  width: 62px;
-  height: 62px;
+  width: var(--story-ring-inner);
+  height: var(--story-ring-inner);
   border-radius: 50%;
   overflow: hidden;
   background: #fff;
@@ -278,6 +273,17 @@
   touch-action: none;
 }
 
+.story-composer-overlays {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.story-composer-overlays .story-composer-text {
+  pointer-events: auto;
+}
+
 .story-composer-stage .story-text-overlay,
 .story-composer-text {
   position: absolute;
@@ -289,11 +295,31 @@
   touch-action: none;
 }
 
-.story-composer-text.active {
+.story-composer-text-drag-handle {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 24px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  padding: 0;
+}
+
+.story-composer-text-drag-handle:active {
   cursor: grabbing;
 }
 
-.story-composer-text span {
+.story-composer-text-body {
   display: block;
   padding: 8px 12px;
   background: rgba(0, 0, 0, 0.45);
@@ -303,10 +329,11 @@
   font-size: 1.1rem;
   text-align: center;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  touch-action: none;
 }
 
-.story-composer-text.active span {
-  outline: 2px dashed #fff;
+.story-composer-text.active {
+  cursor: grabbing;
 }
 
 .story-composer-text-input {

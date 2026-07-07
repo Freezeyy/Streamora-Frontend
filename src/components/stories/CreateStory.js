@@ -3,6 +3,7 @@ import { FaPlus } from 'react-icons/fa';
 import useUserProfile from '../hooks/useUserProfile';
 import StoryComposer from './StoryComposer';
 import StoryRing from './StoryRing';
+import { STORY_FILE_ACCEPT, validateStoryFile } from './storyMediaUtils';
 
 const getInitials = (name) => {
   if (!name) return '?';
@@ -18,6 +19,7 @@ const CreateStory = ({
   creating,
   ownStoryCount = 0,
   onViewOwnStories,
+  onValidationError,
 }) => {
   const inputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -48,12 +50,20 @@ const CreateStory = ({
     openFilePicker();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
     e.target.value = '';
+
+    if (!file) return;
+
+    const validation = await validateStoryFile(file);
+    if (!validation.ok) {
+      onValidationError?.(validation.error);
+      return;
+    }
+
+    onValidationError?.(null);
+    setSelectedFile(file);
   };
 
   const handleComposerClose = () => {
@@ -61,6 +71,12 @@ const CreateStory = ({
   };
 
   const handleComposerSubmit = async (file, overlays) => {
+    const validation = await validateStoryFile(file);
+    if (!validation.ok) {
+      onValidationError?.(validation.error);
+      return;
+    }
+
     const result = await onCreate(file, overlays);
     if (result) {
       setSelectedFile(null);
@@ -104,7 +120,7 @@ const CreateStory = ({
         <input
           ref={inputRef}
           type="file"
-          accept="image/*,video/*"
+          accept={STORY_FILE_ACCEPT}
           className="hidden"
           onChange={handleFileChange}
         />

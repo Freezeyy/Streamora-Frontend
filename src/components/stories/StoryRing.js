@@ -37,8 +37,6 @@ const StoryRing = ({ count = 0, children, className = '' }) => {
     return (
       <div className={`story-ring story-ring--segmented ${className}`}>
         <svg
-          width={RING_SIZE}
-          height={RING_SIZE}
           viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
           className="story-ring-svg"
           aria-hidden="true"
@@ -69,8 +67,6 @@ const StoryRing = ({ count = 0, children, className = '' }) => {
   return (
     <div className={`story-ring story-ring--segmented ${className}`}>
       <svg
-        width={RING_SIZE}
-        height={RING_SIZE}
         viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
         className="story-ring-svg"
         aria-hidden="true"

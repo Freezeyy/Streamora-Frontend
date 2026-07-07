@@ -35,6 +35,7 @@ const StoriesBar = () => {
   } = useStories();
 
   const [viewer, setViewer] = useState(null);
+  const [localError, setLocalError] = useState(null);
   const loggedInUserId = localStorage.getItem("user`s Id");
 
   const { ownStoryGroup, otherStoryGroups } = useMemo(() => {
@@ -80,6 +81,7 @@ const StoriesBar = () => {
             creating={creating}
             ownStoryCount={ownStoryGroup?.stories?.length || 0}
             onViewOwnStories={openOwnStories}
+            onValidationError={setLocalError}
           />
         </div>
 
@@ -132,6 +134,7 @@ const StoriesBar = () => {
       )}
 
       {error && <p className="stories-error">{error}</p>}
+      {localError && <p className="stories-error">{localError}</p>}
       {!loading && !hasOtherStories && (
         <p className="stories-hint">
           Follow people to see their stories here. Stories expire after 24 hours.

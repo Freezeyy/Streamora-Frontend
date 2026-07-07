@@ -193,6 +193,40 @@
   z-index: 2;
 }
 
+.story-viewer-stage--loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.story-viewer-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.story-viewer-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: story-viewer-spin 0.8s linear infinite;
+}
+
+@keyframes story-viewer-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .story-viewer-hint {
   margin: 10px 0 0;
   text-align: center;
@@ -245,12 +279,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  width: 80px;
+  width: var(--story-item-width, 72px);
 }
 
 .story-ring-button:hover .story-ring-svg path {
@@ -258,17 +292,21 @@
 }
 
 .story-ring-label {
-  font-size: 12px;
+  font-size: 11px;
   color: #374151;
-  max-width: 80px;
+  width: var(--story-item-width, 72px);
+  max-width: var(--story-item-width, 72px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .story-rings-row {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-start;
   width: max-content;
+  padding-bottom: 2px;
 }

@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaTimes, FaPlus, FaTrash, FaArrowsAlt } from 'react-icons/fa';
 import { buildOverlaysPayload } from './storyOverlays';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
+const DRAG_THRESHOLD_PX = 6;
 
 const DraggableText = ({
   overlay,
@@ -18,6 +19,7 @@ const DraggableText = ({
 }) => {
   const dragState = useRef(null);
   const elementRef = useRef(null);
+  const didDragRef = useRef(false);
 
   const endDrag = useCallback((pointerId) => {
     if (!dragState.current || dragState.current.pointerId !== pointerId) return;
@@ -33,14 +35,11 @@ const DraggableText = ({
     }
   }, []);
 
-  const handlePointerDown = (event) => {
-    if (event.target.closest('.story-composer-text-input, .story-composer-text-delete')) {
-      return;
-    }
-
+  const startDrag = (event) => {
     event.preventDefault();
     event.stopPropagation();
     onSelect(overlay.id);
+    didDragRef.current = false;
 
     dragState.current = {
       pointerId: event.pointerId,
@@ -59,6 +58,12 @@ const DraggableText = ({
     if (!dragState.current || dragState.current.pointerId !== event.pointerId) return;
     if (!containerRef.current) return;
 
+    const movedX = Math.abs(event.clientX - dragState.current.startX);
+    const movedY = Math.abs(event.clientY - dragState.current.startY);
+    if (movedX < DRAG_THRESHOLD_PX && movedY < DRAG_THRESHOLD_PX) return;
+
+    didDragRef.current = true;
+
     const rect = containerRef.current.getBoundingClientRect();
     const dx = ((event.clientX - dragState.current.startX) / rect.width) * 100;
     const dy = ((event.clientY - dragState.current.startY) / rect.height) * 100;
@@ -73,28 +78,53 @@ const DraggableText = ({
     endDrag(event.pointerId);
   };
 
+  const handleTap = (event) => {
+    if (didDragRef.current) {
+      event.stopPropagation();
+      didDragRef.current = false;
+      return;
+    }
+    event.stopPropagation();
+    onSelect(overlay.id);
+  };
+
   return (
     <div
       ref={elementRef}
       className={`story-composer-text ${isActive ? 'active' : ''}`}
       style={{ left: `${overlay.x}%`, top: `${overlay.y}%` }}
-      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onClick={handleTap}
     >
+      <button
+        type="button"
+        className="story-composer-text-drag-handle"
+        aria-label="Drag text"
+        onPointerDown={startDrag}
+      >
+        <FaArrowsAlt size={10} />
+      </button>
+
       {isActive ? (
         <input
           type="text"
           value={overlay.text}
           onChange={(e) => onChange(overlay.id, { text: e.target.value })}
           onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
           className="story-composer-text-input"
           placeholder="Type something..."
           autoFocus
         />
       ) : (
-        <span>{overlay.text || 'Tap to edit'}</span>
+        <span
+          onPointerDown={startDrag}
+          className="story-composer-text-body"
+        >
+          {overlay.text || 'Tap to edit'}
+        </span>
       )}
       {isActive && (
         <button
@@ -104,6 +134,7 @@ const DraggableText = ({
             e.stopPropagation();
             onRemove(overlay.id);
           }}
+          onPointerDown={(e) => e.stopPropagation()}
           aria-label="Remove text"
         >
           <FaTrash size={10} />
@@ -186,6 +217,7 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
 
   const handleMediaPointerDown = (event) => {
     if (isVideo || event.button !== 0) return;
+    if (event.target.closest('.story-composer-overlays')) return;
     event.stopPropagation();
 
     if (event.pointerType === 'touch' && event.isPrimary === false) return;
@@ -288,17 +320,23 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
             <video src={previewUrl} className="story-stage-media" muted playsInline controls />
           )}
 
-          {overlays.map((overlay) => (
-            <DraggableText
-              key={overlay.id}
-              overlay={overlay}
-              isActive={activeId === overlay.id}
-              onSelect={setActiveId}
-              onChange={handleOverlayChange}
-              onRemove={handleRemoveOverlay}
-              containerRef={canvasRef}
-            />
-          ))}
+          <div
+            className="story-composer-overlays"
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            {overlays.map((overlay) => (
+              <DraggableText
+                key={overlay.id}
+                overlay={overlay}
+                isActive={activeId === overlay.id}
+                onSelect={setActiveId}
+                onChange={handleOverlayChange}
+                onRemove={handleRemoveOverlay}
+                containerRef={canvasRef}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="story-composer-controls">
@@ -315,7 +353,7 @@ const StoryComposer = ({ file, onClose, onSubmit, submitting }) => {
                 className="story-composer-zoom-slider"
                 aria-label="Zoom image"
               />
-              <span className="story-composer-zoom-hint">Drag image to reposition</span>
+              <span className="story-composer-zoom-hint">Drag image to reposition · use handle to move text</span>
             </div>
           )}
 
