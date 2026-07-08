@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 import useEvent from "../components/hooks/useEvent";
+import useWhatsAppLink from "../components/hooks/useWhatsAppLink";
 import WhatsAppEventsGuide from "../components/WhatsAppEventsGuide";
+import { formatEventCreator, shouldShowEventCreator } from "../utils/eventCreator";
 import "../components/css/WhatsAppEventsGuide.css";
 
 const EMPTY_FORM = { eventTitle: "", date: "", eventTime: "", notes: "" };
@@ -35,6 +37,8 @@ const Calendar = () => {
     updateEvent,
     deleteEvent,
   } = useEvent();
+
+  const { whatsappJid } = useWhatsAppLink();
 
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -208,8 +212,10 @@ const Calendar = () => {
                 {item.groupName && (
                   <p className="text-sm text-blue-700 mt-1">{item.groupName}</p>
                 )}
-                {item.createdBy && (
-                  <p className="text-xs text-gray-500 mt-0.5">by {item.createdBy}</p>
+                {(shouldShowEventCreator(item, whatsappJid)) && (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    by {formatEventCreator(item, whatsappJid)}
+                  </p>
                 )}
                 {item.notes && <p className="text-sm text-gray-600 mt-1">{item.notes}</p>}
               </div>

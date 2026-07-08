@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useEvent from './hooks/useEvent';
+import useWhatsAppLink from './hooks/useWhatsAppLink';
 import WhatsAppSyncHint from './WhatsAppSyncHint';
+import { formatEventCreator, shouldShowEventCreator } from '../utils/eventCreator';
 import './css/RightColumn.css';
 
 function RightColumn() {
   const {
     event, loading, error, bot,
   } = useEvent({ limit: 3 });
+  const { whatsappJid } = useWhatsAppLink();
 
   return (
     <div className="right-column-stack">
@@ -35,6 +38,11 @@ function RightColumn() {
                       <div className="event-lol">{item.eventTime}</div>
                       {item.groupName && (
                         <div className="event-group">{item.groupName}</div>
+                      )}
+                      {(shouldShowEventCreator(item, whatsappJid)) && (
+                        <div className="event-creator">
+                          by {formatEventCreator(item, whatsappJid)}
+                        </div>
                       )}
                     </div>
                   </div>

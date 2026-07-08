@@ -150,6 +150,12 @@
   max-width: 100%;
 }
 
+.event-creator {
+  font-size: 11px;
+  color: var(--snow-text-muted);
+  margin-top: 4px;
+}
+
 .right-column-view-all {
   display: inline-block;
   margin-top: 10px;
